@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import {createPerson} from "../helpers/api";
+  import {addTask} from "../helpers/api";
 
     export default {
         data() {
@@ -47,12 +47,17 @@
                   date: this.date,
                   status: 'Выполняется'
                 };
-                createPerson(newTask);
+
+                addTask(newTask);
                 this.add(newTask);
               }
             },
             add(newTask) {
                 this.$store.commit('tasks/addTask', newTask);
+            },
+            load(){
+                console.log('$store', this.$store.state.tasks)
+                this.$store.commit('tasks/getTasks')
             },
             formIsValidation() {
                 let isValid = true;
@@ -69,6 +74,6 @@
 
                 return isValid;
             }
-        }
+        },
     }
 </script>

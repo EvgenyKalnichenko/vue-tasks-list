@@ -1,8 +1,12 @@
 <template>
-  <h1 v-if="$store.state.tasks.length === 0" class="text-white center">Задач пока нет</h1>
+  <template v-if="$store.state.tasks.length === 0" >
+    <h1 class="text-white center">Задач пока нет</h1>
+    <button class="btn primary" @click="load()">загрузить задачи</button>
+  </template>
+
   <template v-else>
     <h3 class="text-white">Всего активных задач: {{allTasks}}</h3>
-    <div class="card" v-for="task in $store.state.tasks" :key="task.id">
+    <div class="card" v-for="task in $store.state.tasks" :key="task.id" >
       <h2 class="card-title">
         {{task.title}}
         <AppStatus :type="'done'" />
@@ -15,7 +19,7 @@
         </strong>
       </p>
       <p>{{task.text}}</p>
-      <button class="btn primary">Посмотреть</button>
+      <button class="btn primary" @click="load()">Посмотреть</button>
     </div>
   </template>
 </template>
@@ -30,6 +34,16 @@
     },
     components: {
       AppStatus
+    },
+    methods: {
+      load(){
+
+        this.$store.commit('tasks/getTasks')
+        console.log('$store', this.$store.state)
+      },
+    },
+    watch(){
+
     }
   }
 </script>
