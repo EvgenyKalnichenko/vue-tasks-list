@@ -23,7 +23,9 @@
 </template>
 
 <script>
-  import {addTask} from "../helpers/api";
+    import {addTask} from "../helpers/api";
+    import {mapActions}  from 'vuex'
+    import router from "../router";
 
     export default {
         data() {
@@ -40,25 +42,29 @@
         },
         methods: {
             submitHandler() {
-              if(this.formIsValidation()) {
-                const newTask = {
-                  title: this.title,
-                  text: this.text,
-                  date: this.date,
-                  status: 'Выполняется'
-                };
+                if (this.formIsValidation()) {
+                    const newTask = {
+                        id: Date.now().toString(),
+                        title: this.title,
+                        text: this.text,
+                        date: this.date,
+                        status: 'Выполняется'
+                    };
 
-                addTask(newTask);
-                this.add(newTask);
-              }
+                    addTask(newTask);
+                   setTimeout(()=>{
+                       router.push('/');
+                   }, 300)
+                }
             },
-            add(newTask) {
-                this.$store.commit('tasks/addTask', newTask);
-            },
-            load(){
-                console.log('$store', this.$store.state.tasks)
-                this.$store.commit('tasks/getTasks')
-            },
+            ...mapActions('tasks', ['getTasks']),
+            // ...mapMutations({
+            //     addTask: 'tasks/ADD_TASK'
+            // }),
+            //
+            // add(newTask) {
+            //     this.addTask({value : newTask})
+            // },
             formIsValidation() {
                 let isValid = true;
 

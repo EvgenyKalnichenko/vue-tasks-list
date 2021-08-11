@@ -1,28 +1,39 @@
-import {loadTasks} from "../../helpers/api";
-
 export default {
     namespaced: true,
     state() {
-        return []
+        return {
+            loading: false,
+            list: []
+        }
     },
     mutations: {
-        addTask(state, payload) {
-            state.push(payload)
+        SET_LOADING_STATUS(state, status){
+            state.loading = status;
         },
-        getTasks(state){
-            const tasks = loadTasks();
-
-            const tasksList = Object.keys(tasks).map(key => {
-                return {
-                    id: key,
-                    ...tasks[key]
-                }
-            })
-            state.splice(1, state.length).push([...tasksList]);
+        SET_TASKS(state, tasks){
+            state.list = tasks;
+        },
+        ADD_TASK(state, task){
+            state.list.push(task);
+        },
+    },
+    actions: {
+        async getTasks(context) {
+            context.commit('SET_LOADING_STATUS', true);
+            await fetch('https://vue-with-http-694ff-default-rtdb.firebaseio.com/tasks.json')
+                .then((response) => {
+                    return response.json();
+                }).then((data) => {
+                    context.commit('SET_LOADING_STATUS', 'false');
+                    context.commit('SET_TASKS', data)
+                }).catch((error) => {
+                    context.commit('SET_LOADING_STATUS', 'false');
+                    console.log(error);
+                });
         }
     },
     getters: {
-        allTasks(state){
+        allTasks(state) {
             return state.length
         }
     }

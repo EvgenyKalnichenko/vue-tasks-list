@@ -1,49 +1,53 @@
 <template>
-  <template v-if="$store.state.tasks.length === 0" >
-    <h1 class="text-white center">Задач пока нет</h1>
-    <button class="btn primary" @click="load()">загрузить задачи</button>
-  </template>
-
-  <template v-else>
-    <h3 class="text-white">Всего активных задач: {{allTasks}}</h3>
-    <div class="card" v-for="task in $store.state.tasks" :key="task.id" >
-      <h2 class="card-title">
-        {{task.title}}
-        <AppStatus :type="'done'" />
-      </h2>
-      <p>
-        <strong>
-          <small>
-            {{new Date().toLocaleDateString()}}
-          </small>
-        </strong>
-      </p>
-      <p>{{task.text}}</p>
-      <button class="btn primary" @click="load()">Посмотреть</button>
-    </div>
-  </template>
+    <template v-if="$store.state.tasks.list.length === 0">
+        <h1 class="text-white center">Задач пока нет</h1>
+    </template>
+    <template v-else>
+        <h3 class="text-white">Всего активных задач: {{allTasks}}</h3>
+        <div class="card" v-for="task in $store.state.tasks.list" :key="task.id" :id="task.id">
+            <h2 class="card-title">
+                {{task.title}}
+                <AppStatus :type="task.status"/>
+            </h2>
+            <p>
+                <strong>
+                    <small>
+                        {{new Date().toLocaleDateString()}}
+                    </small>
+                </strong>
+            </p>
+            <p>{{task.text}}</p>
+            <button class="btn primary">Посмотреть</button>
+            <button class="btn danger">Удалить</button>
+        </div>
+    </template>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-  import AppStatus from '../components/AppStatus'
+    import {mapGetters, mapActions} from 'vuex'
+    import AppStatus from '../components/AppStatus'
 
-  export default {
-    computed: {
-      ...mapGetters('tasks', ['allTasks'])
-    },
-    components: {
-      AppStatus
-    },
-    methods: {
-      load(){
+    export default {
+        data(){
+            return{
 
-        this.$store.commit('tasks/getTasks')
-        console.log('$store', this.$store.state)
-      },
-    },
-    watch(){
-
+            }
+        },
+        computed: {
+            ...mapGetters('tasks', ['allTasks']),
+        },
+        components: {
+            AppStatus
+        },
+        methods: {
+            ...mapActions('tasks', ['getTasks']),
+        },
+        mounted() {
+            if(!this.$store.state.tasks.list.length){
+                this.getTasks().then(() => {
+                    console.log(this.$store.state.tasks.list);
+                });
+            }
+        },
     }
-  }
 </script>
