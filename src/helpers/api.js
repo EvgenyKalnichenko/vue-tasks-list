@@ -1,7 +1,7 @@
-const url =  'https://vue-with-http-694ff-default-rtdb.firebaseio.com/tasks.json';
+const url = 'https://vue-with-http-694ff-default-rtdb.firebaseio.com/tasks.json';
 
-const addTask = async (task) => {
-    await fetch(url, {
+const addTask = async (task, list) => {
+    const response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -9,19 +9,15 @@ const addTask = async (task) => {
         body: JSON.stringify({
             ...task
         })
+    });
+
+    const firebaseData = await response.json()
+
+    list.push({
+        ...task,
+        id: firebaseData.name
     })
 };
-
-// async function loadTask() {
-//     await fetch(url)
-//         .then((response) => {
-//             return response.json();
-//         })
-//         .then((data) => {
-//             return data;
-//         });
-// };
-
 export {
     addTask
 }

@@ -1,5 +1,5 @@
 <template>
-    <template v-if="$store.state.tasks.list.length === 0">
+    <template v-if="$store.state.tasks.list.length === 0 ">
         <h1 class="text-white center">Задач пока нет</h1>
     </template>
     <template v-else>
@@ -17,8 +17,8 @@
                 </strong>
             </p>
             <p>{{task.text}}</p>
-            <button class="btn primary">Посмотреть</button>
-            <button class="btn danger">Удалить</button>
+            <button class="btn primary" @click="openTask(task.id)">Посмотреть</button>
+            <button class="btn danger" @click="removeTask(task.id)">Удалить</button>
         </div>
     </template>
 </template>
@@ -26,13 +26,9 @@
 <script>
     import {mapGetters, mapActions} from 'vuex'
     import AppStatus from '../components/AppStatus'
+    import router from "../router";
 
     export default {
-        data(){
-            return{
-
-            }
-        },
         computed: {
             ...mapGetters('tasks', ['allTasks']),
         },
@@ -41,12 +37,15 @@
         },
         methods: {
             ...mapActions('tasks', ['getTasks']),
+            ...mapActions('tasks', ['removeTask']),
+            // ...mapMutations('tasks', ['REMOVE_TASK']),
+            openTask(id){
+                router.push(`/task/${id}`);
+            }
         },
         mounted() {
             if(!this.$store.state.tasks.list.length){
-                this.getTasks().then(() => {
-                    console.log(this.$store.state.tasks.list);
-                });
+                this.getTasks();
             }
         },
     }

@@ -8,7 +8,7 @@ const router = createRouter({
     routes: [
         { path: '/', component: Tasks, alias: '/' },
         { path: '/new', component: New},
-        { path: '/task', component: Task},
+        { path: '/task/:id', props: true, component: Task},
     ],
 })
 
